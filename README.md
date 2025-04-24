@@ -6,7 +6,9 @@ Implement simple note taking app with sync functionality using [yjs](https://git
 
 This project uses a simple WebSocket server to handle the communication between clients.
 
-To start the server, run the following command (you need to have nodejs installed):
+To start the server, you need to have the `y-websocket` and `@y/websocket-server` packages installed (see [package.json](./package.json). The `@y/websocket-server` package can be installed as dev dependency.
+
+Then, run the following command (you need to have nodejs installed):
 
 ```bash
 YPERSISTENCE=./dbDir HOST=0.0.0.0 PORT=1234 npx y-websocket
