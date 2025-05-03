@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4 overflow-y-hidden">
-    <TodoNoteAdd :focus="focus" @addTodo="addTodo('start')" />
+    <TodoNoteAdd :focus="focus" @addTodo="addTodo('start', $event)" />
 
     <VueDraggableNext
       v-if="isTodoNote(todoNote)"
@@ -33,7 +33,7 @@
       </li>
     </VueDraggableNext>
 
-    <TodoNoteAdd @addTodo="addTodo('end')" />
+    <TodoNoteAdd @addTodo="addTodo('end', $event)" />
   </div>
 </template>
 
@@ -66,8 +66,8 @@ const newTodo = ref('')
 
 const findNote = (id: string) => store.notes.find((note) => note.id === id)
 
-const addTodo = (where: 'start' | 'end') => {
-  const value = newTodo.value.trim()
+const addTodo = (where: 'start' | 'end', title: string) => {
+  const value = title.trim()
   if (value.length === 0) {
     return
   }
