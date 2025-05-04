@@ -7,7 +7,11 @@ export interface WithTimestamp {
   updated: number
 }
 
-export interface Note extends WithId, WithTimestamp {
+export interface WithColor {
+  rgb: string
+}
+
+export interface Note extends WithId, WithTimestamp, WithColor {
   title: string
 }
 

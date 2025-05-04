@@ -7,6 +7,7 @@
           <ButtonCustom
             :to="{ name: 'notes', params: { id: note.id } }"
             class="flex-1 wrap-anywhere"
+            :style="{ 'background-color': `${note.rgb}55` }"
           >
             <div class="flex items-center gap-4">
               <IconTextSnippet v-if="isTextNote(note)" class="size-5" />

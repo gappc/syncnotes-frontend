@@ -9,6 +9,7 @@ export const createTextNote = (title?: string, text?: string): TextNote => ({
   text: text ?? '',
   created: new Date().getTime(),
   updated: new Date().getTime(),
+  rgb: '#000000',
 })
 
 export const createTodoNote = (title?: string, todos?: Todo[]): TodoNote => ({
@@ -17,6 +18,7 @@ export const createTodoNote = (title?: string, todos?: Todo[]): TodoNote => ({
   todos: todos ?? [],
   created: new Date().getTime(),
   updated: new Date().getTime(),
+  rgb: '#000000',
 })
 
 export const createTodo = (title: string): Todo => ({
