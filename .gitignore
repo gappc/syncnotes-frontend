@@ -33,4 +33,6 @@ coverage
 /dbDir
 /dev-dist
 
+.env
+.env.production
 compose.override.yml
