@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center gap-2">
+  <div class="flex justify-center gap-2 text-lg">
     <ButtonCustom @click="addTextNote">New TEXT note</ButtonCustom>
     <ButtonCustom @click="addTodoNote">New TODO note</ButtonCustom>
   </div>
