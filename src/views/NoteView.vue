@@ -1,6 +1,6 @@
 <template>
   <div v-if="note != null" class="flex flex-1 flex-col gap-2 overflow-y-hidden">
-    <div class="flex items-center gap-2 opacity-50">
+    <div class="flex items-center gap-2">
       <ButtonCustom :to="{ name: 'home' }" class="flex items-center justify-between" size="xs">
         <IconArrowLeftS class="size-12" />
       </ButtonCustom>
