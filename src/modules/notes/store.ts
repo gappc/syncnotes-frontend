@@ -20,7 +20,7 @@ export const undoManager = createUndoManager(store.notes)
 const doc = getYjsDoc(store)
 
 // Configure WebSockets
-const wsProvider = new WebsocketProvider('ws://syncnotes.gappc.net:1234', 'syncnotes', doc)
+const wsProvider = new WebsocketProvider('wss://syncnotes.gappc.net/api', 'syncnotes', doc)
 
 wsProvider.on('status', (event) => {
   console.log(event.status)
