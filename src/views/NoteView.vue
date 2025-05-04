@@ -1,7 +1,12 @@
 <template>
   <div v-if="note != null" class="flex flex-1 flex-col gap-2 overflow-y-hidden">
-    <div class="flex gap-2">
-      <ButtonCustom :to="{ name: 'home' }">Back</ButtonCustom>
+    <div class="flex gap-2 bg-yellow-600/50 p-2">
+      <ButtonCustom :to="{ name: 'home' }" class="flex items-center justify-between" size="sm">
+        <IconArrowLeftS class="size-5" />
+      </ButtonCustom>
+      <ButtonCustom :to="{ name: 'home' }" class="flex items-center justify-between" size="sm">
+        Color
+      </ButtonCustom>
       <InputCustom
         v-model="note.title"
         class="w-full"
@@ -29,6 +34,7 @@ import InputCustom from '@/components/input/InputCustom.vue'
 import TextNote from '@/components/note/TextNote.vue'
 import TodoNote from '@/components/note/TodoNote.vue'
 import UndoRedo from '@/components/note/UndoRedo.vue'
+import IconArrowLeftS from '@/components/svg/IconArrowLeftS.vue'
 import { createUndoManager, store } from '@/modules/notes/store'
 import { isNewNote, isTextNote, isTodoNote } from '@/modules/notes/utils'
 import { useRoute } from 'vue-router'
