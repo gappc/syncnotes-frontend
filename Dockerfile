@@ -12,7 +12,7 @@ RUN npm ci
 
 COPY src/ ./src/
 COPY public/ ./public/
-COPY env* ./
+COPY .env* ./
 COPY index.html ./
 COPY tsconfig.* ./
 COPY vite.config.* ./
