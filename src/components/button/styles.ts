@@ -14,7 +14,7 @@ export const variantClass: Record<Variant, Record<Tone, string>> = {
 
 export const sizeClass: Record<Size, string> = {
   xs: 'leading-tight',
-  sm: 'pt-1.5 pb-1.5 px-6 leading-tight',
+  sm: 'pt-1.5 pb-1.5 px-3 leading-tight',
   md: 'py-3 px-5 leading-tight',
 }
 
@@ -32,7 +32,7 @@ export const useButtonClasses = ({
   computed(() =>
     [
       // Base classes
-      'inline-block rounded-md',
+      'rounded-md',
       // Handle variant and tone
       variantClass[toValue(variant)][toValue(tone)],
       // Handle size
