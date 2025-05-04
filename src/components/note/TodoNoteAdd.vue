@@ -8,7 +8,9 @@
       :with-reset-button="true"
       @keyup.enter="emit('addTodo', todoName)"
     />
-    <ButtonCustom @click="emit('addTodo', todoName)">Add</ButtonCustom>
+    <ButtonCustom @click="emit('addTodo', todoName)" size="sm">
+      <IconAdd class="size-5" />
+    </ButtonCustom>
   </div>
 </template>
 
@@ -16,6 +18,7 @@
 import ButtonCustom from '@/components/button/ButtonCustom.vue'
 import InputCustom from '@/components/input/InputCustom.vue'
 import { ref } from 'vue'
+import IconAdd from '../svg/IconAdd.vue'
 
 const emit = defineEmits<{ (e: 'addTodo', todo: string): void }>()
 
