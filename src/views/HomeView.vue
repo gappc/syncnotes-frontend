@@ -27,7 +27,11 @@
         <p class="text-center text-gray-500">Create a new note to get started</p>
       </div>
     </div>
-    <CreateNote class="pt-4" />
+
+    <div class="flex items-center justify-between gap-2 pt-4">
+      <UndoRedo :undoManager="undoManager" class="justify-center" />
+      <CreateNote />
+    </div>
   </main>
 </template>
 
@@ -35,9 +39,10 @@
 import ButtonCustom from '@/components/button/ButtonCustom.vue'
 import ButtonDeleteWithApprove from '@/components/button/ButtonDeleteWithApprove.vue'
 import CreateNote from '@/components/note/CreateNote.vue'
+import UndoRedo from '@/components/note/UndoRedo.vue'
 import IconTaskLine from '@/components/svg/IconTaskLine.vue'
 import IconTextSnippet from '@/components/svg/IconTextSnippet.vue'
-import { store } from '@/modules/notes/store'
+import { store, undoManager } from '@/modules/notes/store'
 import type { GenericNote } from '@/modules/notes/types'
 import { isTextNote, isTodoNote } from '@/modules/notes/utils'
 
