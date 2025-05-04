@@ -1,7 +1,11 @@
 <template>
   <div class="flex justify-center gap-2 text-lg">
-    <ButtonCustom @click="addTextNote">New TEXT note</ButtonCustom>
-    <ButtonCustom @click="addTodoNote">New TODO note</ButtonCustom>
+    <ButtonCustom @click="addTextNote" class="flex items-center gap-1">
+      <IconAdd class="size-5" /> TEXT
+    </ButtonCustom>
+    <ButtonCustom @click="addTodoNote" class="flex items-center gap-1">
+      <IconAdd class="size-5" /> TODO
+    </ButtonCustom>
   </div>
 </template>
 
@@ -10,6 +14,7 @@ import ButtonCustom from '@/components/button/ButtonCustom.vue'
 import { store } from '@/modules/notes/store'
 import { createTextNote, createTodoNote, isTextNote, isTodoNote } from '@/modules/notes/utils'
 import { useRouter } from 'vue-router'
+import IconAdd from '../svg/IconAdd.vue'
 
 const router = useRouter()
 
