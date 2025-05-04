@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: build
+    image: gappc/syncnotes-frontend:latest
+    restart: unless-stopped

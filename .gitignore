@@ -32,3 +32,5 @@ coverage
 # DB
 /dbDir
 /dev-dist
+
+compose.override.yml
