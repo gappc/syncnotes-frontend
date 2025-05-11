@@ -1,7 +1,8 @@
 <template>
   <div class="flex gap-2">
     <InputCustom
-      v-model="todoName"
+      ref="todo-input"
+      v-model="todoText"
       class="w-full"
       placeholder="What needs to be done?"
       :focus="focus"
@@ -17,21 +18,24 @@
 <script setup lang="ts">
 import ButtonCustom from '@/components/button/ButtonCustom.vue'
 import InputCustom from '@/components/input/InputCustom.vue'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import IconAdd from '../svg/IconAdd.vue'
 
 const emit = defineEmits<{ (e: 'addTodo', todo: string): void }>()
 
 withDefaults(defineProps<{ focus?: boolean }>(), { focus: false })
 
-const todoName = ref('')
+const todoInput = useTemplateRef('todo-input')
+const todoText = ref('')
 
 const emitTodo = () => {
-  const value = todoName.value.trim()
+  const value = todoText.value.trim()
   if (value.length === 0) {
     return
   }
   emit('addTodo', value)
-  todoName.value = ''
+
+  todoText.value = ''
+  todoInput.value?.focus()
 }
 </script>

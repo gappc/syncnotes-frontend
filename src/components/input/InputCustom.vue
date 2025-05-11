@@ -64,4 +64,13 @@ onMounted(() => {
     inputElement.value?.focus()
   }
 })
+
+defineExpose({
+  focus: () => {
+    inputElement.value?.focus()
+  },
+  blur: () => {
+    inputElement.value?.blur()
+  },
+})
 </script>
