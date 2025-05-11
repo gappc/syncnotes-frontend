@@ -1,6 +1,5 @@
 <template>
   <main class="flex flex-1 flex-col overflow-y-hidden">
-    <h2 class="my-3 py-2 text-2xl">Notes</h2>
     <div class="flex flex-1 overflow-y-hidden">
       <ul v-if="store.notes.length > 0" class="flex flex-1 flex-col gap-2 overflow-y-auto">
         <li v-for="note in store.notes" :key="note.id" class="flex gap-2">
