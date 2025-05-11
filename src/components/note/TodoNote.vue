@@ -29,7 +29,13 @@
           :class="{ 'line-through': todo.completed }"
           @input="todoNote.updated = new Date().getTime()"
         />
-        <ButtonDeleteWithApprove @delete="removeTodo(todo.id)" class="p-3" />
+        <ButtonCustom
+          size="xs"
+          class="flex items-center justify-center p-3"
+          @click="removeTodo(todo.id)"
+        >
+          <IconDelete class="size-5" />
+        </ButtonCustom>
       </li>
     </VueDraggableNext>
 
@@ -45,10 +51,11 @@ import type { TodoNote } from '@/modules/notes/types'
 import { createTodo, isTodoNote } from '@/modules/notes/utils'
 import { ref, toRefs } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
-import ButtonDeleteWithApprove from '../button/ButtonDeleteWithApprove.vue'
+import ButtonCustom from '../button/ButtonCustom.vue'
 import IconCheckboxBlankCircle from '../svg/IconCheckboxBlankCircle.vue'
 import IconCheckboxCircle from '../svg/IconCheckboxCircle.vue'
 import TodoNoteAdd from './TodoNoteAdd.vue'
+import IconDelete from '../svg/IconDelete.vue'
 
 const props = withDefaults(
   defineProps<{

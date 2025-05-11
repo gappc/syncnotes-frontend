@@ -15,10 +15,13 @@
               {{ getNoteTitle(note) }}
             </div>
           </ButtonCustom>
-          <ButtonDeleteWithApprove
-            @delete="deleteNote(note.id)"
+          <ButtonCustom
+            size="xs"
             class="flex items-center justify-center p-3"
-          />
+            @click="deleteNote(note.id)"
+          >
+            <IconDelete class="size-5" />
+          </ButtonCustom>
         </li>
       </ul>
       <div v-else class="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-xl">
@@ -36,9 +39,9 @@
 
 <script setup lang="ts">
 import ButtonCustom from '@/components/button/ButtonCustom.vue'
-import ButtonDeleteWithApprove from '@/components/button/ButtonDeleteWithApprove.vue'
 import CreateNote from '@/components/note/CreateNote.vue'
 import UndoRedo from '@/components/note/UndoRedo.vue'
+import IconDelete from '@/components/svg/IconDelete.vue'
 import IconTaskLine from '@/components/svg/IconTaskLine.vue'
 import IconTextSnippet from '@/components/svg/IconTextSnippet.vue'
 import { store, undoManager } from '@/modules/notes/store'
