@@ -1,5 +1,5 @@
 <template>
-  <DebugOut class="flex flex-col">
+  <DebugOut v-if="isDev" class="flex flex-col">
     <div class="w-full">store.notes {{ store.notes }}</div>
   </DebugOut>
   <RouterView></RouterView>
@@ -9,4 +9,6 @@
 import { store } from '@/modules/notes/store'
 import { RouterView } from 'vue-router'
 import DebugOut from './components/debug/DebugOut.vue'
+
+const isDev = import.meta.env.DEV
 </script>
