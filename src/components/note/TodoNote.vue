@@ -2,22 +2,12 @@
   <div class="flex flex-col gap-4 overflow-y-hidden">
     <TodoNoteAdd :focus="focus" @addTodo="addTodo('start', $event)" />
 
-    <VueDraggableNext
-      v-if="isTodoNote(todoNote)"
-      ref="todoListContainer"
-      tag="ul"
-      handle=".handle"
-      class="todo-list-container flex flex-1 flex-col gap-3 overflow-y-auto"
-      :list="[...todoNote.todos]"
-      @change="changeTodoOrder"
-    >
+    <ul class="todo-list-container flex flex-1 flex-col gap-3 overflow-y-auto">
       <li
         v-for="todo in todoNote.todos"
         :key="todo.id"
         class="flex items-center justify-between gap-2"
       >
-        <IconDragAndDrop class="handle size-8 cursor-pointer" />
-
         <button @click="todo.completed = !todo.completed">
           <IconCheckboxCircle v-if="todo.completed" class="size-12 text-emerald-600" />
           <IconCheckboxBlankCircle v-else class="size-12" />
@@ -37,7 +27,7 @@
           <IconDelete class="size-5" />
         </ButtonCustom>
       </li>
-    </VueDraggableNext>
+    </ul>
 
     <TodoNoteAdd @addTodo="addTodo('end', $event)" />
   </div>
@@ -45,17 +35,16 @@
 
 <script setup lang="ts">
 import InputCustom from '@/components/input/InputCustom.vue'
-import IconDragAndDrop from '@/components/svg/IconDragAndDrop.vue'
 import { store } from '@/modules/notes/store'
 import type { TodoNote } from '@/modules/notes/types'
 import { createTodo, isTodoNote } from '@/modules/notes/utils'
-import { ref, toRefs } from 'vue'
-import { VueDraggableNext } from 'vue-draggable-next'
+import Sortable from 'sortablejs'
+import { onMounted, onUnmounted, ref, toRefs } from 'vue'
 import ButtonCustom from '../button/ButtonCustom.vue'
 import IconCheckboxBlankCircle from '../svg/IconCheckboxBlankCircle.vue'
 import IconCheckboxCircle from '../svg/IconCheckboxCircle.vue'
-import TodoNoteAdd from './TodoNoteAdd.vue'
 import IconDelete from '../svg/IconDelete.vue'
+import TodoNoteAdd from './TodoNoteAdd.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -70,6 +59,39 @@ const props = withDefaults(
 const { todoNote } = toRefs(props)
 
 const newTodo = ref('')
+
+let sortable: Sortable | undefined
+
+onMounted(() => {
+  const todoListContainer = document.querySelector<HTMLUListElement>('.todo-list-container')
+  if (todoListContainer) {
+    sortable = Sortable.create(todoListContainer, {
+      animation: 150,
+      easing: 'cubic-bezier(1, 0, 0, 1)',
+      chosenClass: 'bg-emerald-600/50',
+      onUpdate: ({ oldIndex, newIndex }) => {
+        if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
+          return
+        }
+
+        // Copy element to avoid reference issues
+        const element = JSON.parse(JSON.stringify(todoNote.value.todos[oldIndex]))
+        // Remove the element from the old index
+        todoNote.value.todos.splice(oldIndex, 1)
+        // Insert the element copy at the new index
+        todoNote.value.todos.splice(newIndex, 0, element)
+        // Update todo list timestamp
+        todoNote.value.updated = new Date().getTime()
+      },
+    })
+  }
+})
+
+onUnmounted(() => {
+  if (sortable) {
+    sortable.destroy()
+  }
+})
 
 const findNote = (id: string) => store.notes.find((note) => note.id === id)
 
@@ -120,27 +142,6 @@ const removeTodo = (todoId: string) => {
   }
 
   note.todos.splice(index, 1)
-
-  note.updated = new Date().getTime()
-}
-
-const changeTodoOrder = ({
-  moved: { newIndex, oldIndex },
-}: {
-  moved: { newIndex: number; oldIndex: number; element: unknown }
-}) => {
-  console.log(`changeTodoOrder: ${oldIndex} -> ${newIndex}`)
-  const note = findNote(todoNote.value.id)
-  if (!isTodoNote(note)) {
-    console.error(`Note with id ${todoNote.value.id} is not a todo note`)
-    return
-  }
-
-  const tmpOldTodo = JSON.parse(JSON.stringify(note.todos[oldIndex]))
-  const tmpNewTodo = JSON.parse(JSON.stringify(note.todos[newIndex]))
-
-  note.todos.splice(newIndex, 1, tmpOldTodo)
-  note.todos.splice(oldIndex, 1, tmpNewTodo)
 
   note.updated = new Date().getTime()
 }
