@@ -69,6 +69,8 @@ onMounted(() => {
       animation: 150,
       easing: 'cubic-bezier(1, 0, 0, 1)',
       chosenClass: 'bg-emerald-600/50',
+      delay: 300,
+      delayOnTouchOnly: true,
       onUpdate: ({ oldIndex, newIndex }) => {
         if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
           return
