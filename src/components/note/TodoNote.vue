@@ -8,10 +8,14 @@
         :key="todo.id"
         class="flex items-center justify-between gap-2"
       >
-        <button @click="todo.completed = !todo.completed">
-          <IconCheckboxCircle v-if="todo.completed" class="size-12 text-emerald-600" />
-          <IconCheckboxBlankCircle v-else class="size-12" />
-        </button>
+        <div class="handle flex items-center gap-2">
+          <IconDragAndDrop class="size-8 cursor-pointer" />
+
+          <button @click="todo.completed = !todo.completed">
+            <IconCheckboxCircle v-if="todo.completed" class="size-12 text-emerald-600" />
+            <IconCheckboxBlankCircle v-else class="size-12" />
+          </button>
+        </div>
 
         <InputCustom
           v-model="todo.title"
@@ -45,6 +49,7 @@ import IconCheckboxBlankCircle from '../svg/IconCheckboxBlankCircle.vue'
 import IconCheckboxCircle from '../svg/IconCheckboxCircle.vue'
 import IconDelete from '../svg/IconDelete.vue'
 import TodoNoteAdd from './TodoNoteAdd.vue'
+import IconDragAndDrop from '../svg/IconDragAndDrop.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -69,8 +74,7 @@ onMounted(() => {
       animation: 150,
       easing: 'cubic-bezier(1, 0, 0, 1)',
       chosenClass: 'bg-emerald-600/50',
-      delay: 300,
-      delayOnTouchOnly: true,
+      handle: '.handle',
       onUpdate: ({ oldIndex, newIndex }) => {
         if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
           return
