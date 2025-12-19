@@ -1,8 +1,12 @@
 <template>
   <main class="flex flex-1 flex-col overflow-y-hidden">
     <div class="flex flex-1 overflow-y-hidden">
-      <ul v-if="store.notes.length > 0" class="flex flex-1 flex-col gap-2 overflow-y-auto">
-        <li v-for="note in store.notes" :key="note.id" class="flex gap-2">
+      <ul class="notes-list-container flex flex-1 flex-col gap-2 overflow-y-auto">
+        <li v-for="note in store.notes" :key="note.id" class="flex items-center gap-2">
+          <div class="handle">
+            <IconDragAndDrop class="size-8 cursor-pointer" />
+          </div>
+
           <ButtonCustom
             :to="{ name: 'notes', params: { id: note.id } }"
             class="flex-1 wrap-anywhere"
@@ -24,7 +28,10 @@
           </ButtonCustom>
         </li>
       </ul>
-      <div v-else class="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-xl">
+      <div
+        v-if="store.notes.length === 0"
+        class="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-xl"
+      >
         <p class="text-center text-gray-500">No notes available</p>
         <p class="text-center text-gray-500">Create a new note to get started</p>
       </div>
@@ -42,11 +49,47 @@ import ButtonCustom from '@/components/button/ButtonCustom.vue'
 import CreateNote from '@/components/note/CreateNote.vue'
 import UndoRedo from '@/components/note/UndoRedo.vue'
 import IconDelete from '@/components/svg/IconDelete.vue'
+import IconDragAndDrop from '@/components/svg/IconDragAndDrop.vue'
 import IconTaskLine from '@/components/svg/IconTaskLine.vue'
 import IconTextSnippet from '@/components/svg/IconTextSnippet.vue'
 import { store, undoManager } from '@/modules/notes/store'
 import type { GenericNote } from '@/modules/notes/types'
 import { isTextNote, isTodoNote } from '@/modules/notes/utils'
+import Sortable from 'sortablejs'
+import { onMounted, onUnmounted } from 'vue'
+
+let sortable: Sortable | undefined;
+
+onMounted(() => {
+  const notesListContainer = document.querySelector<HTMLUListElement>('.notes-list-container')
+  if (notesListContainer) {
+    console.log(notesListContainer)
+    sortable = Sortable.create(notesListContainer, {
+      animation: 150,
+      easing: 'cubic-bezier(1, 0, 0, 1)',
+      chosenClass: 'bg-emerald-600/50',
+      handle: '.handle',
+      onUpdate: ({ oldIndex, newIndex }) => {
+        if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
+          return
+        }
+
+        // Copy element to avoid reference issues
+        const element = JSON.parse(JSON.stringify(store.notes[oldIndex]))
+        // Remove the element from the old index
+        store.notes.splice(oldIndex, 1)
+        // Insert the element copy at the new index
+        store.notes.splice(newIndex, 0, element)
+      },
+    })
+  }
+})
+
+onUnmounted(() => {
+   if (sortable) {
+    sortable.destroy()
+  }
+})
 
 const getNoteTitle = (note: GenericNote) => {
   if (note.title == null || note.title.trim().length === 0) {
@@ -57,7 +100,6 @@ const getNoteTitle = (note: GenericNote) => {
 }
 
 const deleteNote = (id: string) => {
-  console.log('deleteNote', id)
   const index = store.notes.findIndex((note) => note.id === id)
   if (index === -1) {
     return
