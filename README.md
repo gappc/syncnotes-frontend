@@ -5,6 +5,7 @@ Implement simple note taking app with sync functionality using [yjs](https://git
 ## Table of Contents
 
 - [Installation](#installation)
+- [ngrok](#ngrok)
 - [Docker](#docker)
 - [Environment variables](#environment-variables)
 - [WebSocket server](#websocket-server)
@@ -23,6 +24,24 @@ npm install
 
 # Start the client
 npm run dev
+```
+
+## ngrok
+
+To expose your local development server to the internet, you can use [ngrok](https://ngrok.com/). After installing ngrok, run the following command to create a secure tunnel to your local server:
+
+```bash
+ngrok http 5173
+```
+
+Replace `5173` with the port your development server is running on if different. ngrok will provide a public URL that you can use to access your local server from anywhere.
+
+Note: you need to set the `server.allowedHosts` configuration option in your Vite config to include the ngrok URL, e.g.
+
+```json
+server: {
+  allowedHosts: ['YOUR-NGROK-URL']
+}
 ```
 
 ## Docker
