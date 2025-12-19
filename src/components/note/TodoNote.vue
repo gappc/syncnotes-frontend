@@ -41,15 +41,15 @@
 import InputCustom from '@/components/input/InputCustom.vue'
 import { store } from '@/modules/notes/store'
 import type { TodoNote } from '@/modules/notes/types'
+import { useSortable } from '@/modules/notes/useSortable'
 import { createTodo, isTodoNote } from '@/modules/notes/utils'
-import Sortable from 'sortablejs'
-import { onMounted, onUnmounted, ref, toRefs } from 'vue'
+import { ref, toRefs } from 'vue'
 import ButtonCustom from '../button/ButtonCustom.vue'
 import IconCheckboxBlankCircle from '../svg/IconCheckboxBlankCircle.vue'
 import IconCheckboxCircle from '../svg/IconCheckboxCircle.vue'
 import IconDelete from '../svg/IconDelete.vue'
-import TodoNoteAdd from './TodoNoteAdd.vue'
 import IconDragAndDrop from '../svg/IconDragAndDrop.vue'
+import TodoNoteAdd from './TodoNoteAdd.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -64,40 +64,6 @@ const props = withDefaults(
 const { todoNote } = toRefs(props)
 
 const newTodo = ref('')
-
-let sortable: Sortable | undefined
-
-onMounted(() => {
-  const todoListContainer = document.querySelector<HTMLUListElement>('.todo-list-container')
-  if (todoListContainer) {
-    sortable = Sortable.create(todoListContainer, {
-      animation: 150,
-      easing: 'cubic-bezier(1, 0, 0, 1)',
-      chosenClass: 'bg-emerald-600/50',
-      handle: '.handle',
-      onUpdate: ({ oldIndex, newIndex }) => {
-        if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
-          return
-        }
-
-        // Copy element to avoid reference issues
-        const element = JSON.parse(JSON.stringify(todoNote.value.todos[oldIndex]))
-        // Remove the element from the old index
-        todoNote.value.todos.splice(oldIndex, 1)
-        // Insert the element copy at the new index
-        todoNote.value.todos.splice(newIndex, 0, element)
-        // Update todo list timestamp
-        todoNote.value.updated = new Date().getTime()
-      },
-    })
-  }
-})
-
-onUnmounted(() => {
-  if (sortable) {
-    sortable.destroy()
-  }
-})
 
 const findNote = (id: string) => store.notes.find((note) => note.id === id)
 
@@ -151,4 +117,19 @@ const removeTodo = (todoId: string) => {
 
   note.updated = new Date().getTime()
 }
+
+useSortable('.todo-list-container', ({ oldIndex, newIndex }) => {
+  if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
+    return
+  }
+
+  // Copy element to avoid reference issues
+  const element = JSON.parse(JSON.stringify(todoNote.value.todos[oldIndex]))
+  // Remove the element from the old index
+  todoNote.value.todos.splice(oldIndex, 1)
+  // Insert the element copy at the new index
+  todoNote.value.todos.splice(newIndex, 0, element)
+  // Update todo list timestamp
+  todoNote.value.updated = new Date().getTime()
+})
 </script>
