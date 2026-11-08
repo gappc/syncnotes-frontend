@@ -3,21 +3,17 @@
 </template>
 
 <script setup lang="ts">
+import { updateNote } from '@/modules/notes/store'
 import type { TextNote } from '@/modules/notes/types'
-import { computed, toRefs } from 'vue'
+import { computed, type DeepReadonly } from 'vue'
 import TextareaCustom from '../textarea/TextareaCustom.vue'
 
-const props = withDefaults(defineProps<{ textNote: TextNote; focus?: boolean }>(), {
+const props = withDefaults(defineProps<{ textNote: DeepReadonly<TextNote>; focus?: boolean }>(), {
   focus: false,
 })
 
-const { textNote } = toRefs(props)
-
 const note = computed({
   get: () => props.textNote.text,
-  set: (value) => {
-    textNote.value.text = value
-    textNote.value.updated = new Date().getTime()
-  },
+  set: (text) => updateNote(props.textNote.id, { text: text ?? '' }),
 })
 </script>

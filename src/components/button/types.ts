@@ -1,5 +1,5 @@
-export type Size = "xs" | "sm" | "md";
+export type Size = 'xs' | 'sm' | 'md'
 
-export type Tone = "primary";
+export type Tone = 'primary'
 
-export type Variant = "solid" | "ghost";
+export type Variant = 'solid' | 'ghost'

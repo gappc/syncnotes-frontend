@@ -1,4 +1,5 @@
 import * as uuid from 'uuid'
+import type { DeepReadonly } from 'vue'
 import type { TodoNote, GenericNote, TextNote, Todo } from '@/modules/notes/types'
 
 export const generateId = () => uuid.v4()
@@ -27,11 +28,17 @@ export const createTodo = (title: string): Todo => ({
   completed: false,
 })
 
-export const isTextNote = (note: GenericNote | null | undefined): note is TextNote =>
-  (note as TextNote | null | undefined)?.text !== undefined
+type AnyNote = GenericNote | DeepReadonly<GenericNote>
 
-export const isTodoNote = (note: GenericNote | null | undefined): note is TodoNote =>
-  (note as TodoNote | null | undefined)?.todos !== undefined
+export const isTextNote = <N extends AnyNote>(
+  note: N | null | undefined,
+): note is Extract<N, { text: string }> =>
+  (note as { text?: unknown } | null | undefined)?.text !== undefined
 
-export const isNewNote = (note: GenericNote | null | undefined) =>
+export const isTodoNote = <N extends AnyNote>(
+  note: N | null | undefined,
+): note is Extract<N, { todos: unknown }> =>
+  (note as { todos?: unknown } | null | undefined)?.todos !== undefined
+
+export const isNewNote = (note: { created: number } | null | undefined) =>
   note == null || new Date().getTime() - note.created < 500

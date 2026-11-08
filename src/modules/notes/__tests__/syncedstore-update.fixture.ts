@@ -1,0 +1,4 @@
+// Generated with @syncedstore/core 0.6.0: one text note and one todo note.
+// Used to make sure data written by SyncedStore stays readable.
+export const syncedStoreUpdateBase64 =
+  'ARb75c6IAgAHAQVub3RlcwEoAPvlzogCAAJpZAF3BnRleHQtMSgA++XOiAIABXRpdGxlAXcIU2hvcHBpbmcoAPvlzogCAAR0ZXh0AXcKTWlsawpCcmVhZCgA++XOiAIAB2NyZWF0ZWQBe0J4vP5WgAAAKAD75c6IAgAHdXBkYXRlZAF7Qni8/la+gAAoAPvlzogCAANyZ2IBdwcjZmYwMDAwh/vlzogCAAEoAPvlzogCBwJpZAF3BnRvZG8tMSgA++XOiAIHBXRpdGxlAXcGQ2hvcmVzJwD75c6IAgcFdG9kb3MABwD75c6IAgoBKAD75c6IAgsCaWQBdwJ0MSgA++XOiAILBXRpdGxlAXcGRGlzaGVzKAD75c6IAgsJY29tcGxldGVkAXiH++XOiAILASgA++XOiAIPAmlkAXcCdDIoAPvlzogCDwV0aXRsZQF3B0xhdW5kcnkoAPvlzogCDwljb21wbGV0ZWQBeSgA++XOiAIHB2NyZWF0ZWQBe0J4vP5W/QAAKAD75c6IAgcHdXBkYXRlZAF7Qni8/lc7gAAoAPvlzogCBwNyZ2IBdwcjMDBmZjAwAA=='

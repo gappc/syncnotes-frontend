@@ -1,23 +1,60 @@
-import type { StoreShape } from '@/modules/notes/types'
-import { getYjsDoc, getYjsValue, syncedStore, Y } from '@syncedstore/core'
 import { HocuspocusProvider } from '@hocuspocus/provider'
+import { computed, shallowRef, type DeepReadonly } from 'vue'
+import * as Y from 'yjs'
+import * as notesDoc from './notes-doc'
+import type { GenericNote } from './types'
+import { createTextNote, createTodoNote } from './utils'
 
-const shape: StoreShape = {
-  notes: [],
+const doc = new Y.Doc()
+const notesArray = notesDoc.getNotesArray(doc)
+
+// Vue sees a plain, read-only snapshot of the notes. It is replaced on every
+// change (local or remote); all writes go through the functions below.
+const snapshot = shallowRef(notesDoc.readNotes(doc))
+notesArray.observeDeep(() => {
+  snapshot.value = notesDoc.readNotes(doc)
+})
+
+export const notes = computed(() => snapshot.value as DeepReadonly<GenericNote[]>)
+
+export const undoManager = new Y.UndoManager(notesArray)
+
+export const createNoteUndoManager = (id: string) => {
+  const note = notesDoc.findNoteMap(doc, id)
+  return note ? new Y.UndoManager(note) : null
 }
 
-// Create your SyncedStore store
-export const store = syncedStore(shape)
-
-export const createUndoManager = <T = unknown>(value: T) => {
-  const yjsValue = getYjsValue(value) as Y.AbstractType<T>
-  return new Y.UndoManager(yjsValue)
+export const addTextNote = () => {
+  const note = createTextNote()
+  notesDoc.addNote(doc, note)
+  return note.id
 }
 
-export const undoManager = createUndoManager(store.notes)
+export const addTodoNote = () => {
+  const note = createTodoNote()
+  notesDoc.addNote(doc, note)
+  return note.id
+}
 
-// Create a document that syncs automatically using Y-WebRTC
-const doc = getYjsDoc(store)
+export const deleteNote = (id: string) => notesDoc.deleteNote(doc, id)
+
+export const moveNote = (oldIndex: number, newIndex: number) =>
+  notesDoc.moveNote(doc, oldIndex, newIndex)
+
+export const updateNote = (id: string, changes: notesDoc.NoteChanges) =>
+  notesDoc.updateNote(doc, id, changes)
+
+export const addTodo = (noteId: string, title: string, where: 'start' | 'end') =>
+  notesDoc.addTodo(doc, noteId, title, where)
+
+export const removeTodo = (noteId: string, todoId: string) =>
+  notesDoc.removeTodo(doc, noteId, todoId)
+
+export const updateTodo = (noteId: string, todoId: string, changes: notesDoc.TodoChanges) =>
+  notesDoc.updateTodo(doc, noteId, todoId, changes)
+
+export const moveTodo = (noteId: string, oldIndex: number, newIndex: number) =>
+  notesDoc.moveTodo(doc, noteId, oldIndex, newIndex)
 
 const documentName = 'syncnotes'
 

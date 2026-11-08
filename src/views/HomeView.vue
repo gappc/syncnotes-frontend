@@ -2,7 +2,7 @@
   <main class="flex flex-1 flex-col overflow-y-hidden">
     <div class="flex flex-1 overflow-y-hidden">
       <ul class="notes-list-container flex flex-1 flex-col gap-2 overflow-y-auto">
-        <li v-for="note in store.notes" :key="note.id" class="flex items-center gap-2">
+        <li v-for="note in notes" :key="note.id" class="flex items-center gap-2">
           <div class="handle">
             <IconDragAndDrop class="size-8 cursor-pointer" />
           </div>
@@ -29,7 +29,7 @@
         </li>
       </ul>
       <div
-        v-if="store.notes.length === 0"
+        v-if="notes.length === 0"
         class="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-xl"
       >
         <p class="text-center text-gray-500">No notes available</p>
@@ -52,12 +52,13 @@ import IconDelete from '@/components/svg/IconDelete.vue'
 import IconDragAndDrop from '@/components/svg/IconDragAndDrop.vue'
 import IconTaskLine from '@/components/svg/IconTaskLine.vue'
 import IconTextSnippet from '@/components/svg/IconTextSnippet.vue'
-import { store, undoManager } from '@/modules/notes/store'
+import { deleteNote, moveNote, notes, undoManager } from '@/modules/notes/store'
 import type { GenericNote } from '@/modules/notes/types'
+import type { DeepReadonly } from 'vue'
 import { useSortable } from '@/modules/notes/useSortable'
 import { isTextNote, isTodoNote } from '@/modules/notes/utils'
 
-const getNoteTitle = (note: GenericNote) => {
+const getNoteTitle = (note: DeepReadonly<GenericNote>) => {
   if (note.title == null || note.title.trim().length === 0) {
     return `(${new Intl.DateTimeFormat('de-DE').format(new Date(note.updated))})`
   }
@@ -65,25 +66,11 @@ const getNoteTitle = (note: GenericNote) => {
   return note.title
 }
 
-const deleteNote = (id: string) => {
-  const index = store.notes.findIndex((note) => note.id === id)
-  if (index === -1) {
-    return
-  }
-
-  store.notes.splice(index, 1)
-}
-
 useSortable('.notes-list-container', ({ oldIndex, newIndex }) => {
   if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
     return
   }
 
-  // Copy element to avoid reference issues
-  const element = JSON.parse(JSON.stringify(store.notes[oldIndex]))
-  // Remove the element from the old index
-  store.notes.splice(oldIndex, 1)
-  // Insert the element copy at the new index
-  store.notes.splice(newIndex, 0, element)
+  moveNote(oldIndex, newIndex)
 })
 </script>

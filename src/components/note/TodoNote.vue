@@ -11,22 +11,22 @@
         <div class="handle flex items-center gap-2">
           <IconDragAndDrop class="size-8 cursor-pointer" />
 
-          <button @click="todo.completed = !todo.completed">
+          <button @click="updateTodo(todoNote.id, todo.id, { completed: !todo.completed })">
             <IconCheckboxCircle v-if="todo.completed" class="size-12 text-emerald-600" />
             <IconCheckboxBlankCircle v-else class="size-12" />
           </button>
         </div>
 
         <InputCustom
-          v-model="todo.title"
+          :model-value="todo.title"
           class="grow"
           :class="{ 'line-through': todo.completed }"
-          @input="todoNote.updated = new Date().getTime()"
+          @update:model-value="updateTodo(todoNote.id, todo.id, { title: $event ?? '' })"
         />
         <ButtonCustom
           size="xs"
           class="flex items-center justify-center p-3"
-          @click="removeTodo(todo.id)"
+          @click="removeTodo(todoNote.id, todo.id)"
         >
           <IconDelete class="size-5" />
         </ButtonCustom>
@@ -39,11 +39,10 @@
 
 <script setup lang="ts">
 import InputCustom from '@/components/input/InputCustom.vue'
-import { store } from '@/modules/notes/store'
+import { addTodo as addTodoToNote, moveTodo, removeTodo, updateTodo } from '@/modules/notes/store'
 import type { TodoNote } from '@/modules/notes/types'
 import { useSortable } from '@/modules/notes/useSortable'
-import { createTodo, isTodoNote } from '@/modules/notes/utils'
-import { ref, toRefs } from 'vue'
+import type { DeepReadonly } from 'vue'
 import ButtonCustom from '../button/ButtonCustom.vue'
 import IconCheckboxBlankCircle from '../svg/IconCheckboxBlankCircle.vue'
 import IconCheckboxCircle from '../svg/IconCheckboxCircle.vue'
@@ -53,7 +52,7 @@ import TodoNoteAdd from './TodoNoteAdd.vue'
 
 const props = withDefaults(
   defineProps<{
-    todoNote: TodoNote
+    todoNote: DeepReadonly<TodoNote>
     focus?: boolean
   }>(),
   {
@@ -61,34 +60,13 @@ const props = withDefaults(
   },
 )
 
-const { todoNote } = toRefs(props)
-
-const newTodo = ref('')
-
-const findNote = (id: string) => store.notes.find((note) => note.id === id)
-
 const addTodo = (where: 'start' | 'end', title: string) => {
   const value = title.trim()
   if (value.length === 0) {
     return
   }
 
-  const note = findNote(todoNote.value.id)
-  if (!isTodoNote(note)) {
-    console.error(`Note with id ${todoNote.value.id} is not a todo note`)
-    return
-  }
-
-  const todo = createTodo(value)
-  if (where === 'start') {
-    note.todos.unshift(todo)
-  } else {
-    note.todos.push(todo)
-  }
-
-  note.updated = new Date().getTime()
-
-  newTodo.value = ''
+  addTodoToNote(props.todoNote.id, value, where)
 
   setTimeout(() => {
     const todoListContainer = document.querySelector<HTMLUListElement>('.todo-list-container')
@@ -99,37 +77,11 @@ const addTodo = (where: 'start' | 'end', title: string) => {
   }, 100)
 }
 
-const removeTodo = (todoId: string) => {
-  const note = findNote(todoNote.value.id)
-  if (!isTodoNote(note)) {
-    console.error(`Note with id ${todoNote.value.id} is not a todo note`)
-    return
-  }
-
-  // Find the todo by id
-  const index = note.todos.findIndex((todo) => todo.id === todoId)
-  if (index === -1) {
-    console.error(`Todo with id ${todoId} not found`)
-    return
-  }
-
-  note.todos.splice(index, 1)
-
-  note.updated = new Date().getTime()
-}
-
 useSortable('.todo-list-container', ({ oldIndex, newIndex }) => {
   if (oldIndex === newIndex || oldIndex === undefined || newIndex === undefined) {
     return
   }
 
-  // Copy element to avoid reference issues
-  const element = JSON.parse(JSON.stringify(todoNote.value.todos[oldIndex]))
-  // Remove the element from the old index
-  todoNote.value.todos.splice(oldIndex, 1)
-  // Insert the element copy at the new index
-  todoNote.value.todos.splice(newIndex, 0, element)
-  // Update todo list timestamp
-  todoNote.value.updated = new Date().getTime()
+  moveTodo(props.todoNote.id, oldIndex, newIndex)
 })
 </script>
