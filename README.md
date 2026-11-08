@@ -1,6 +1,6 @@
 # syncnotes
 
-Implement simple note taking app with sync functionality using [yjs](https://github.com/yjs/yjs) and [y-websocket](https://github.com/yjs/y-websocket).
+Implement simple note taking app with sync functionality using [yjs](https://github.com/yjs/yjs) and [Hocuspocus](https://tiptap.dev/docs/hocuspocus/introduction).
 
 ## Table of Contents
 
@@ -87,16 +87,14 @@ The following environment variables are used in the project:
 
 ## WebSocket server
 
-This project provides a simple WebSocket server to be used as example.
-
-To start the server, you need to have the `y-websocket` and `@y/websocket-server` packages installed (see [package.json](./package.json). The `@y/websocket-server` package can be installed as dev dependency.
-
-Then, run the following command (you need to have nodejs installed):
+The app syncs with the Hocuspocus server from the [syncnotes-backend](https://github.com/gappc/syncnotes-backend) repository (folder `sync/`). To run it locally (Node.js 24 or newer):
 
 ```bash
-YPERSISTENCE=./dbDir HOST=0.0.0.0 PORT=1234 npx y-websocket
+cd syncnotes-backend/sync
+npm install
+HOST=0.0.0.0 PORT=1234 npm start
 ```
 
-Using `HOST=0.0.0.0`, the server binds to all network interfaces. Given the `POST=1234` setting, you can connect to to the server on localhost e.g. at `ws://localhost:1234`.
+Using `HOST=0.0.0.0`, the server binds to all network interfaces. Given the `PORT=1234` setting, you can connect to the server on localhost e.g. at `ws://localhost:1234` (set `VITE_WEBSOCKET_URL=ws://localhost:1234`).
 
-Note that the `YPERSISTENCE` environment variable is used to specify the directory where the server should store the data. If you don't specify this variable, the server will store the data in memory and you will lose all data when you restart the server.
+The server stores the documents in SQLite, by default in `./db/yjs-documents.sqlite` (configurable with `SQLITE_DATABASE`).

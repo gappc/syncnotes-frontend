@@ -1,6 +1,6 @@
 import type { StoreShape } from '@/modules/notes/types'
 import { getYjsDoc, getYjsValue, syncedStore, Y } from '@syncedstore/core'
-import { WebsocketProvider } from 'y-websocket'
+import { HocuspocusProvider } from '@hocuspocus/provider'
 
 const shape: StoreShape = {
   notes: [],
@@ -19,9 +19,17 @@ export const undoManager = createUndoManager(store.notes)
 // Create a document that syncs automatically using Y-WebRTC
 const doc = getYjsDoc(store)
 
-// Configure WebSockets
-const wsProvider = new WebsocketProvider(import.meta.env.VITE_WEBSOCKET_URL, 'syncnotes', doc)
+const documentName = 'syncnotes'
 
-wsProvider.on('status', (event) => {
+// Connect to the Hocuspocus sync server. The server ignores the URL path,
+// but appending the document name keeps the same request path y-websocket
+// used, so an existing reverse proxy config keeps working.
+const wsProvider = new HocuspocusProvider({
+  url: `${import.meta.env.VITE_WEBSOCKET_URL}/${documentName}`,
+  name: documentName,
+  document: doc,
+})
+
+wsProvider.on('status', (event: { status: string }) => {
   console.log(event.status)
 })
