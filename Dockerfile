@@ -1,6 +1,6 @@
-ARG ALPINE_VERSION=3.23
+ARG ALPINE_VERSION=3.24
 
-FROM node:24-alpine${ALPINE_VERSION} AS builder
+FROM node:26-alpine${ALPINE_VERSION} AS builder
 
 ENV LANGUAGE='en_US:en'
 
