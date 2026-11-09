@@ -1,0 +1,6 @@
+version = 1
+build_env_file = ".env.production"
+
+[[part]]
+name = "app"
+stage = "build"
